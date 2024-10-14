@@ -146,7 +146,6 @@ public class Main {
          *            Tests for the myHashMap replace(K,V) method
          *
          ******************************************************************/
-      
         oldValue = hashmap.replace("Key_8", 16);
 
         // verify replace returned the previous value, which should be 8

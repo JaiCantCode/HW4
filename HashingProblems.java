@@ -10,10 +10,7 @@
  *  - twoSums
  */
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class HashingProblems {
 
@@ -40,8 +37,15 @@ class HashingProblems {
          * returning 0.0 is NOT correct, as that is not the average value. Whereas
          * returning 0.0/0.0 IS correct (which would return a non-number).
          */
-
-         return 0.0 / 0.0;
+        double avg = 0.0;
+        int count = 0;
+        for(int i : array) {
+            if(map.containsKey(i)) {
+                avg += map.get(i);
+                count++;
+            }
+        }
+        return avg / count;
   }
 
 
@@ -53,16 +57,13 @@ class HashingProblems {
      */
 
   public ArrayList<String> odd(HashMap<Integer, String> map) {
-    
-      ArrayList<String> result = new ArrayList<>();
-
       /*
        * ADD YOUR CODE HERE
        *
        * Hint: Consider iterating over the HashMap using the keySet method.
        */
-
-
+      ArrayList<String> result = new ArrayList<>();
+      map.forEach((k,v) -> { if(k%2 != 0) result.add(v); });
       return result;
   }
 
@@ -105,12 +106,16 @@ class HashingProblems {
    */
 
   public int twoSums(int[] numbers, int k) {
-
       /*
        * ADD YOUR CODE HERE
        */
-
-      return -1;
+      HashSet<Integer> tmp = new HashSet<>();
+      int count = 0;
+      for(int i : numbers) {
+          count += (tmp.contains(i + k) || tmp.contains(i - k)) ? 1 : 0;
+          tmp.add(i);
+      }
+      return count;
   }
 
 } /* end class HashingProblems */

@@ -72,10 +72,7 @@
  *
  ****************************************/
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 
 /**
@@ -189,7 +186,6 @@ class myHashMap<K,V> {
 
     public V get(K key) {
         int index = getBucketIndex(key);
-
         HashNode<K, V> head = bucket.get(index);
         while (head != null) {
             if (head.key.equals(key)) {
@@ -230,8 +226,70 @@ class myHashMap<K,V> {
          * the return value discussion in this method's prologue to make sure the correct
          * return value is returned the invoking function based on the remove outcome.
          */
+        /*
+        if(get(key) == null) return null;
+        V val = get(key);
+        int index = getBucketIndex(key);
+        bucket.remove(index);
+        size--;
+        if(index != 0 || index != size) bucket.get(index-1).next = bucket.get(index);
+        if(index == size) bucket.get(index-1).next = null;
+        return val;
+         */
+        /*
+        if(!containsKey(key)) return null;
+        int index = getBucketIndex(key);
+        V value = get(key);
+        HashNode<K, V> node = bucket.get(index);
+        System.out.println("Index:" + index + " Key:" + key + " Val:" + value);
+        System.out.println("Index:" + getBucketIndex(node.key) + " Key:" + node.key + " Val:" + node.value);
+        System.out.println("Index:" + bucket.indexOf(node) + " Key:" + bucket.get(bucket.indexOf(node)).key + " Val:" + bucket.get(bucket.indexOf(node)).value);
+        HashNode<K, V> rmNode = bucket.remove(index);
+        if(rmNode != null) size--;
+        return rmNode.value;
+        */
+        ////*
+        V val = get(key);
+        if(val == null) return null;
+        int index = getBucketIndex(key);
+        HashNode<K, V> head = bucket.get(index);
+        HashNode<K, V> prev = head;
+        if (head == null){
+            return null;
+        } else {
+            while (head != null) {
+                if(head.key.equals(key)) {
+                    size--;
+                    break;
+                }
+                prev = head;
+                head = head.next;
+            }
+            if(head.key.equals(key)){
+                if(prev != head) {
+                    prev.next = head.next;
+                }
+                bucket.remove(getBucketIndex(head.key));
+            }
+        }
 
-        return null;
+        ArrayList<HashNode<K, V>> tmp = bucket;
+        bucket = new ArrayList<>();
+        numBuckets--;
+        size = 0;
+
+        for (int i = 0; i < numBuckets; i++) {
+            bucket.add(null);
+        }
+
+        for (HashNode<K, V> headNode : tmp) {
+            while (headNode != null) {
+                put(headNode.key, headNode.value);
+                headNode = headNode.next;
+            }
+        }
+        return val;
+        // */
     }
 
 
@@ -405,8 +463,12 @@ class myHashMap<K,V> {
          * Make sure you return the proper value based on the outcome of this method's
          * replace (see method's prologue above).
          */
-
-        return val;
+        if(!containsKey(key)) return null;
+        int index = getBucketIndex(key);
+        HashNode<K, V> node = bucket.get(index);
+        V oldValue = node.value;
+        bucket.get(index).value = val;
+        return oldValue;
     }
 
     
@@ -433,8 +495,11 @@ class myHashMap<K,V> {
          * This method should apply the precondition (aka, the Key already exists with the
          * value 'oldval', and is so, it SHOULD call replace(K, V) for code reuse.
          */
-
-        return false;
+        int index = getBucketIndex(key);
+        HashNode<K, V> node = bucket.get(index);
+        if(node.value != oldVal) return false;
+        replace(key,newVal);
+        return true;
     }
 
 
